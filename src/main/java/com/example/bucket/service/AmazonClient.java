@@ -4,9 +4,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AmazonClient {
@@ -74,4 +73,11 @@ public class AmazonClient {
         return "Successfully deleted";
     }
 
+    public List<S3ObjectSummary> listFilesTos3bucket() {
+        ObjectListing objectListing = s3client.listObjects(new ListObjectsRequest().withBucketName(bucketName));
+
+        List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
+
+        return s3ObjectSummaries;
+    }
 }

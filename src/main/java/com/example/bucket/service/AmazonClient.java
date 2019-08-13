@@ -5,6 +5,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -79,5 +80,19 @@ public class AmazonClient {
         List<S3ObjectSummary> s3ObjectSummaries = objectListing.getObjectSummaries();
 
         return s3ObjectSummaries;
+    }
+
+    public void downloadAllS3Object() {
+        try {
+            List<S3ObjectSummary> s3ObjectSummaries = listFilesTos3bucket();
+            for (S3ObjectSummary s3ObjectSummary : s3ObjectSummaries) {
+                S3Object object = s3client.getObject(s3ObjectSummary.getBucketName(),
+                        s3ObjectSummary.getKey());
+                File file = new File(s3ObjectSummary.getKey());
+                FileUtils.copyInputStreamToFile(object.getObjectContent(), file);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

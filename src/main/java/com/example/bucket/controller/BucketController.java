@@ -33,4 +33,9 @@ public class BucketController {
     public String deleteFile(@RequestPart(value = "url") String fileUrl) {
         return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
     }
+
+    @GetMapping("/downloadFiles")
+    public void downloadFiles() {
+        this.amazonClient.downloadAllS3Object();
+    }
 }
